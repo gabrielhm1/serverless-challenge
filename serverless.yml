@@ -4,8 +4,9 @@ frameworkVersion: ">=1.1.0"
 
 provider:
   name: aws
-  runtime: nodejs12.x # python3.6
-  profile: hackathon
+  lambdaHashingVersion: '20201221'
+  runtime: python3.6 
+  profile: solvimmuser
   region: us-east-1
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -28,11 +29,10 @@ functions:
     timeout: 30
     events:
       - s3:
-          bucket: bucketname # Escolha o nome do seu bucket que deve ser único
+          bucket: mysolvimmchallengerbbucket # Escolha o nome do seu bucket que deve ser único
           event: s3:ObjectCreated:*
-          rules:
-            - prefix: uploads/
-            - suffix: .jpg
+    Layers:
+        - 'arn:aws:lambda:us-east-1:094451173838:layer:pillow8_40:1'
   getMetadata:
     handler: handler.getMetadata
     description:
@@ -43,6 +43,22 @@ functions:
           path: images/{s3objectkey}
           method: get
           cors: true
+
+  infoImages:
+    handler: handler.infoImages
+    memorySize: 128
+    timeout: 30
+    events:
+      - http:
+          path: imageInfo/
+          method: get
+
+  getImage:
+    handler: handler.getImage
+    memorySize: 128
+    timeout: 30
+    Layers:
+      - 'arn:aws:lambda:us-east-1:094451173838:layer:pillow8_40:1'
 
 resources:
   Resources:
@@ -61,3 +77,5 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+disabledDeprecations:
+  '*'
