@@ -6,7 +6,7 @@ provider:
   name: aws
   lambdaHashingVersion: '20201221'
   runtime: python3.6 
-  profile: solvimmuser
+  profile: solvimmuser # Nome do seu profile
   region: us-east-1
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -31,8 +31,6 @@ functions:
       - s3:
           bucket: mysolvimmchallengerbbucket # Escolha o nome do seu bucket que deve ser único
           event: s3:ObjectCreated:*
-    Layers:
-        - 'arn:aws:lambda:us-east-1:094451173838:layer:pillow8_40:1'
   getMetadata:
     handler: handler.getMetadata
     description:
@@ -57,8 +55,6 @@ functions:
     handler: handler.getImage
     memorySize: 128
     timeout: 30
-    Layers:
-      - 'arn:aws:lambda:us-east-1:094451173838:layer:pillow8_40:1'
 
 resources:
   Resources:

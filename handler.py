@@ -33,8 +33,12 @@ def extractMetadata(event, context):
                     'height':height
                 }
             )
+
+            body = key + " inserido com sucesso"
+
             return{
-                'statusCode':200
+                'statusCode':200,
+                'body':body
             }        
 
         except Exception as e:
